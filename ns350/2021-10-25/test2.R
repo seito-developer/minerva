@@ -1,0 +1,7 @@
+library(lubridate)
+library(ggplot2)
+
+str(iris)
+
+p_0 <- ggplot(data = iris, mapping = aes(x = Sepal.Length, y = Petal.Length))
+p_0
