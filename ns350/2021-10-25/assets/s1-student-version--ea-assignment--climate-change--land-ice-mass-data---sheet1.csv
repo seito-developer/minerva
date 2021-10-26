@@ -1,13 +1,3 @@
-LAND ICE MASS DATA ,,
-Data from JPL RL05p1M (SS48z-CRI),,
-Greenland GIA correction: A et al.,,
-Antarctica GIA correction: Ivins et al.,,
-Values are anomalies relative to timeseries mean,,
-"Provided by David Wiese, JPL",,http://climate.nasa.gov/vital-signs/land-ice/
-,,
-Greenland Trend (2002 - 2014): -287 Gt/yr,,
-Antarctica Trend (2002 - 2014): -134 Gt/yr,,
-,,
 TIME (year.decimal fraction),Greenland mass (Gt),Antarctica mass (Gt)
 2002.29,1490.68,967.2
 2002.35,1485.69,978.55
