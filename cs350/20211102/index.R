@@ -27,7 +27,7 @@ simulate_raquetball = function(number_of_games, prob_win_serve,
     serving = TRUE
     
     # simulating a single game
-    while ("TODO: what is  ending condition for one game?") 
+    while (my_points < points_to_win || opp_points < points_to_win) 
     {
       # simulating the outcome of a single serve
       x = runif(1)
@@ -72,16 +72,13 @@ simulate_raquetball = function(number_of_games, prob_win_serve,
   }
   
   # calculate the win probability
-  win_probability = ## TODO
-    
-    # calculate the expected number of volleys
-    expected_num_volleys = ## TODO
-    
-    print(paste('After', number_of_games, 
-                'simulated games win probability is', 
-                win_probability))
-  print(paste('Average number of volleys per match was', 
-              expected_num_volleys))
+  #win_probability = ## TODO
+  
+  # calculate the expected number of volleys
+  expected_num_volleys = my_points/(my_points + opp_points)
+  
+  #print(paste('After', number_of_games, 'simulated games win probability is', win_probability))
+  print(paste('Average number of volleys per match was', expected_num_volleys))
 }
 
 simulate_raquetball(number_of_games = 1000,
