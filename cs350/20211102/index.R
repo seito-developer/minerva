@@ -27,7 +27,7 @@ simulate_raquetball = function(number_of_games, prob_win_serve,
     serving = TRUE
     
     # simulating a single game
-    while (my_points < points_to_win || opp_points < points_to_win) 
+    while (my_points < points_to_win && opp_points < points_to_win) 
     {
       # simulating the outcome of a single serve
       x = runif(1)
@@ -53,7 +53,7 @@ simulate_raquetball = function(number_of_games, prob_win_serve,
         
         # otherwise, update the opponent's earned points
         else 
-          opp_points = my_points + 1
+          opp_points = opp_points + 1
       }
       
       # in either case, update the number of served volleys
@@ -81,10 +81,9 @@ simulate_raquetball = function(number_of_games, prob_win_serve,
   print(paste('Average number of volleys per match was', expected_num_volleys))
   print(paste('my_points: ', my_points))
   print(paste('opp_points: ', opp_points))
-  #volleylist[total_games] = volleys
 }
 
 simulate_raquetball(number_of_games = 1000,
                     prob_win_serve = 0.6,
-                    prob_win_noserve = 0.5, 
+                    prob_win_noserve = 0.5,
                     points_to_win = 21)
