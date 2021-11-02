@@ -53,7 +53,7 @@ simulate_raquetball = function(number_of_games, prob_win_serve,
         
         # otherwise, update the opponent's earned points
         else 
-          opp_points = ## TODO
+          opp_points = my_points + 1
       }
       
       # in either case, update the number of served volleys
