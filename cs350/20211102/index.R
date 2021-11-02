@@ -72,13 +72,16 @@ simulate_raquetball = function(number_of_games, prob_win_serve,
   }
   
   # calculate the win probability
-  #win_probability = ## TODO
+  win_probability = wins/total_games
   
   # calculate the expected number of volleys
   expected_num_volleys = my_points/(my_points + opp_points)
   
-  #print(paste('After', number_of_games, 'simulated games win probability is', win_probability))
+  print(paste('After', number_of_games, 'simulated games win probability is', win_probability))
   print(paste('Average number of volleys per match was', expected_num_volleys))
+  print(paste('my_points: ', my_points))
+  print(paste('opp_points: ', opp_points))
+  #volleylist[total_games] = volleys
 }
 
 simulate_raquetball(number_of_games = 1000,
