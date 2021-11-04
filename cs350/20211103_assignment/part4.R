@@ -1,22 +1,34 @@
-# Initial setup
-library(ggplot2) # the library for plotting various types of charts
-file_path = "./dataset.csv"
-data <- read.csv(file_path, header = T)
+# Strage to save T/F
+parent_strage <- c()
+child_strage <- c()
 
-#Extract the column of the study workload
-study_workload <- data[,8]
+# Define the simulate times
+challenges <- 10000
 
-#mean
-mean(study_workload)
-#median
-median(study_workload)
-#mode
-names(which.max(table(study_workload)))
-#range
-range(study_workload)
-#standard deviation
-sd(study_workload)
+#Simulate by enough times
+for (parent_i in 1:challenges) {
+  
+  # Generate the coffee prices
+  x <- sample(1:10, 10, replace = FALSE)
+  # Generate my post-it
+  y <- sample(1:10, 10, replace = FALSE)
+  
+  # Compare all coffee prices and my post-its
+  for (child_i in 1:10) {
+   child_strage[child_i] <- x[child_i] == y[child_i]
+  }
+  
+  # Tally the results of "NONE of the post-its are matched to the correct coffee shop"
+  if(sum(child_strage) == 0){
+    parent_strage[parent_i] <- TRUE
+  } else {
+    parent_strage[parent_i] <- FALSE
+  }
+}
 
-#Plot the histogram
-hist(study_workload, col = "lightblue", main = "The studiy workload of Japanese business persons per week", xlab = "Time (mins)")
+# Estimate the probability
+prob <- sum(parent_strage)/challenges
 
+# Output
+print(paste("The probability is", prob * 100, "%"))
+  
