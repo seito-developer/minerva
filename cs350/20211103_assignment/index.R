@@ -1,20 +1,22 @@
-# Load initial files
-library(ggplot2)
-file_path = "./data/dist/dataset.csv"
-data <- read.csv(file_path, na.strings = c("", "NA"))
+# Initial setup
+library(ggplot2) # the library for plotting various types of charts
+file_path = "./dataset.csv"
+data <- read.csv(file_path, header = T)
 
-# Variables
-data$enough_time = data[, 18] #You think you do enough with your time.
-data$plan = data[, 14] #You will plan your activities from day to day.
-data$hw = data[, 21] #You know how much time you spend on each of the homework I do.
+#Extract the column of the study workload
+study_workload <- data[,8]
 
-data_x <- "you think you do enough with your time."
-#data_y <- "You will plan your activities from day to day."
-data_y <- "You know how much time you spend on each of the homework I do."
+#mean
+mean(study_workload)
+#median
+median(study_workload)
+#mode
+names(which.max(table(study_workload)))
+#range
+range(study_workload)
+#standard deviation
+sd(study_workload)
 
-plot_base <- ggplot(data, aes(x=enough_time, y=hw))
-plot_with_label <- plot_base + labs(x = data_x, y= data_y)
-
-# draw
-plot_with_label + geom_point()
+#Plot the histogram
+hist(study_workload, col = "lightblue", main = "The studiy workload of Japanese business persons per week", xlab = "Time (mins)")
 
