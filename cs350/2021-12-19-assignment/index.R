@@ -4,13 +4,14 @@ source('/Users/seito/Documents/develop/minerva/cs350/2021-12-19-assignment/funct
 library(tidyverse)
 
 # Import data
-file_path = "/Users/seito/Documents/develop/minerva/cs350/2021-12-19-assignment/assets/degrees-that-pay-back.csv"
+file_path = "/Users/seito/Documents/develop/minerva/cs350/2021-12-19-assignment/assets/salaries-by-college-type.csv"
 df <- read.csv(file_path, header = T)
 
 # Set data lists
 um <- df[,1]
-sms <- dollerToInt(df[,2], sms)
-mcms <- dollerToInt(df[,3], sms)
+st <- df[,2]
+sms <- dollerToInt(df[,3], sms)
+mcms <- dollerToInt(df[,4], mcms)
 
 #Calculate total income for 30 years
 total_income <- (sms * 10 + mcms * 20)
@@ -24,7 +25,7 @@ for(i in 1:nsims){
 }
 
 #Draw the chart
-hist(samplings, col = "lightblue", main = "Income for 30 years", xlab = "$")
+hist(samplings, col = "lightblue", main = "Income for 30 years", xlab = "Dollar")
 
 values.mean <- mean(total_income)
 values.range <- range(total_income)
@@ -33,4 +34,18 @@ cat("mean:", values.mean)
 cat("sd", values.sd)
 cat("range", values.range)
 
+#Liberal arts
+original_dataset <- data.frame(st, total_income)
+row_len <- nrow(original_dataset)
+la_dataset <- c()
+for (i in 1:row_len) {
+  #complete.cases(la_dataset[i])
+  #print(i)
+  if(original_dataset[i, 1] == "Liberal Arts"){
+    la_dataset <- c(la_dataset, original_dataset[i, 2])
+  }
+ # print(la_dataset[c(i), ])
+}
+print(la_dataset)
 
+sample(la_dataset, 1)
