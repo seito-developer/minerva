@@ -7,12 +7,6 @@ library(tidyverse)
 file_path = "/Users/seito/Documents/develop/minerva/cs350/2021-12-19-assignment/assets/degrees-that-pay-back.csv"
 df1 <- read.csv(file_path, header = T)
 
-dataset <- df1[,3]
-sararies <- c()
-len <- length(dataset)
-for (i in 1:len) {
-  sararies <- c(sararies, dollerToInt(dataset[i]))
-}
-
-print(sararies)
-
+# Starting Median Salary * 10 years
+sms <- dollerToInt(df1[,2], sms)
+print(sms)
