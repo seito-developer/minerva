@@ -9,3 +9,5 @@ dollerToInt <- function(dataset, data_list){
   }
   return(data_list)
 }
+
+
