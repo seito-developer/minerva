@@ -34,18 +34,18 @@ cat("mean:", values.mean)
 cat("sd", values.sd)
 cat("range", values.range)
 
-#Liberal arts
-original_dataset <- data.frame(st, total_income)
-row_len <- nrow(original_dataset)
-la_dataset <- c()
-for (i in 1:row_len) {
-  #complete.cases(la_dataset[i])
-  #print(i)
-  if(original_dataset[i, 1] == "Liberal Arts"){
-    la_dataset <- c(la_dataset, original_dataset[i, 2])
-  }
- # print(la_dataset[c(i), ])
-}
-print(la_dataset)
+#Total income in each of schools
+schools_total_income_dataset <- data.frame(st, total_income)
+row_len <- nrow(schools_total_income_dataset)
 
-sample(la_dataset, 1)
+#Make the dataset of the total income in Ivy League
+il_dataset <- c()
+for (i in 1:row_len) {
+  if(schools_total_income_dataset[i, 1] == "Ivy League"){
+    il_dataset <- c(il_dataset, schools_total_income_dataset[i, 2])
+  }
+  # print(la_dataset[c(i), ])
+}
+print(il_dataset)
+
+sample(il_dataset, 1)
