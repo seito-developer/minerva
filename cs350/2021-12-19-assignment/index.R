@@ -60,35 +60,35 @@ for (i in 1:row_len) {
 print(il_dataset)
 
 # variables for students in engineering
-li_sumilation_size <- 100
+sumilation_size <- 100
 z_value <- 2.33 ## Z value of top 1%
 
 # the simulation if a student in engineering can be in top 1%
-simulate_rate_of_li_total_income <- function(){
-  li_result_storage <- c()
-  for (i in 1:li_sumilation_size){
+simulate_rate_of_total_income <- function(){
+  result_storage <- c()
+  for (i in 1:sumilation_size){
     extracted_il_sample <- sample(il_dataset, 1)
     #Identify standardized Z-value
     #(x - μ)/σ/√n >= 2.33
     print( (extracted_il_sample - values.mean)/(values.sd/sqrt(nsims)) )
     if((extracted_il_sample - values.mean)/(values.sd/sqrt(nsims)) >= z_value){
-      li_result_storage <- c(li_result_storage, 1)
+      result_storage <- c(result_storage, 1)
     } else {
-      li_result_storage <- c(li_result_storage, 0)
+      result_storage <- c(result_storage, 0)
     }
   }
-  return(li_result_storage)
+  return(result_storage)
 }
 
 #Get the probability with 95% of confidence interval
-li_total_result_storage <- c()
+total_result_storage <- c()
 confidence_interval <- 1 - 0.05
-for (i in 1:li_sumilation_size){
-  if(confidence_interval < sum(simulate_rate_of_li_total_income())/li_sumilation_size){
-    li_total_result_storage <- c(li_total_result_storage, 1)
+for (i in 1:sumilation_size){
+  if(confidence_interval < sum(simulate_rate_of_total_income())/sumilation_size){
+    total_result_storage <- c(total_result_storage, 1)
   } else {
-    li_total_result_storage <- c(li_total_result_storage, 0)
+    total_result_storage <- c(total_result_storage, 0)
   }
 }
-print(li_total_result_storage)
-print(sum(li_total_result_storage)/li_sumilation_size)
+print(total_result_storage)
+print(sum(total_result_storage)/sumilation_size)
