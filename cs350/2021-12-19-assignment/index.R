@@ -1,7 +1,7 @@
 # The pakcage library for ggplot2, dplyr, ... etc
 library(tidyverse)
 
-# My function
+# My function for converting string to integer
 dollerToInt <- function(dataset, data_list){
   data_list <- c()
   len <- length(dataset)
