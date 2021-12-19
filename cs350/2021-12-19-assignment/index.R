@@ -39,39 +39,35 @@ for(i in 1:nsims){
 hist(samplings, col = "lightblue", main = "Income for 30 years", xlab = "Dollar")
 
 values.mean <- mean(samplings)
-values.range <- range(total_income)
 values.sd <- sd(samplings)
+z_value <- 2.33 ## Z value of top 1%
 cat("mean:", values.mean)
 cat("sd", values.sd)
-cat("range", values.range)
 
 #Total income in each of schools
 schools_total_income_dataset <- data.frame(st, total_income)
 row_len <- nrow(schools_total_income_dataset)
 
 #Make the dataset of the total income in Ivy League
-il_dataset <- c()
+en_storage <- c()
 for (i in 1:row_len) {
   if(schools_total_income_dataset[i, 1] == "Engineering"){
-    il_dataset <- c(il_dataset, schools_total_income_dataset[i, 2])
+    en_storage <- c(en_storage, schools_total_income_dataset[i, 2])
   }
   # print(la_dataset[c(i), ])
 }
-print(il_dataset)
-
-# variables for students in engineering
-z_value <- 2.33 ## Z value of top 1%
+print(en_storage)
 
 # the simulation if a student in engineering can be in top 1%
 simulate_times <- 10
 simulate_rate_of_total_income <- function(){
   result_storage <- c()
   for (i in 1:simulate_times){
-    extracted_il_sample <- sample(il_dataset, 1)
+    extracted_en_sample <- sample(en_storage, 1)
     #Identify standardized Z-value
     #(x - μ)/σ/√n >= 2.33
-    print( (extracted_il_sample - values.mean)/(values.sd/sqrt(nsims)) )
-    if((extracted_il_sample - values.mean)/(values.sd/sqrt(nsims)) >= z_value){
+    print( (extracted_en_sample - values.mean)/(values.sd/sqrt(nsims)) )
+    if((extracted_en_sample - values.mean)/(values.sd/sqrt(nsims)) >= z_value){
       result_storage <- c(result_storage, 1)
     } else {
       result_storage <- c(result_storage, 0)
@@ -80,11 +76,7 @@ simulate_rate_of_total_income <- function(){
   return(result_storage)
 }
 
-p <- sum(simulate_rate_of_total_income())/simulate_times
-p
-
 total_result_storage <- c()
-#confidence_interval <- 1 - 0.05
 expected_value <- 9/10
 sumilation_size <- 100
 for (i in 1:sumilation_size){
@@ -99,5 +91,5 @@ total_result_storage
 #Get the probability with 95% of confidence interval
 prpbability_entering_top <- sum(total_result_storage)/sumilation_size
 cat('prpbability:', prpbability_entering_top)
-#'confidence interval:', confidence_interval
+
 
