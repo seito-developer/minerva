@@ -15,7 +15,7 @@ for (parent_i in 1:challenges) {
   
   # Compare all coffee prices and my post-its
   for (child_i in 1:10) {
-   child_strage[child_i] <- x[child_i] == y[child_i]
+    child_strage[child_i] <- x[child_i] == y[child_i]
   }
   
   # Tally the results of "NONE of the post-its are matched to the correct coffee shop"
@@ -31,4 +31,4 @@ prob <- sum(parent_strage)/challenges
 
 # Output
 print(paste("The probability is", prob * 100, "%"))
-  
+
