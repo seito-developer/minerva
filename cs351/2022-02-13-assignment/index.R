@@ -1,21 +1,20 @@
 library(ggplot2)
+library(broom)
+library(dplyr)
 
-file_path = "./assets/engineer-career-data2.csv"
+file_path = "./assets/engineer-career-data-arranged.csv"
 dataset <- read.csv(file_path, header = T)
 head(dataset)
-
-arranged_dataset <- dataset[dataset$内定数>=1, ]
-
-age <- arranged_dataset[,1]
-entry <- arranged_dataset[,2]
-year <- arranged_dataset[,3]
-study_load <- arranged_dataset[,4]
-
-#hist(c(age, offer))
+attach(dataset)
 
 #age & entry. r2=0.004504
 #cannot look the relationship
-ggplot(arranged_dataset, aes(x=age, y=entry)) + geom_point() + geom_smooth(method = "lm") + labs(x="Age", y="Entry")
+
+result <- glm(formula = job.offer ~ entry + age + study.load, data=dataset)
+result
+summary(result)
+
+ggplot(dataset, aes(x=age, y=entry)) + geom_point() + geom_smooth(method = "lm") + labs(x="Age", y="Entry")
 summary(lm(age ~ entry, data = arranged_dataset))
 
 #year & entry. r2=0.003

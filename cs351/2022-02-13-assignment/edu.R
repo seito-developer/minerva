@@ -1,3 +1,5 @@
+# 「エンジニアになるのに学歴は不要」という仮説を棄却できるか？
+
 library(ggplot2)
 library(broom)
 library(dplyr)
@@ -7,20 +9,33 @@ dataset <- read.csv(file_path, header = T)
 head(dataset)
 attach(dataset)
 
-#mean
-u_graduated_person <-  dataset[final.education == 1, ]
-hs_graduated_person <- dataset[final.education == 0, ]
+# 勉強時間によって合格率はかわるか？
+# study load p-val = 0.0512
+# 有意差ギリなし
+result <- glm(formula = job.offer ~ study.load, data = dataset, family="binomial")
+result
+summary(result)
 
+#-------------
+
+# 2 type of data
+# 大卒 or 高卒
+u_graduated_person <-  dataset[final.education == "GU", ]
+hs_graduated_person <- dataset[final.education == "GH", ]
+
+# 平均合格率に0.05663251に差がある
 u_jo_mean <- mean(u_graduated_person$job.offer)
 hs_jo_mean <- mean(hs_graduated_person$job.offer)
+cat("the gap between u_jo_mean and hs_jo_mean:", u_jo_mean - hs_jo_mean)
 
-#大卒とそれ以外で関連性があるか判定
-result <- glm(formula = job.offer ~ study.load + final.education, data=dataset)
+# 大卒とそれ以外で関連性があるか判定
+# edu p-val = 0.281
+# 有意差なし
+result <- glm(formula = job.offer ~ study.load + final.education, data = dataset, family="binomial")
 result
+summary(result)
 
-#オッズ比 edu 1.052067
-#大卒はそれ以下の学歴よりも合格率が5%上がる...という可能性が示せそうだが、p-val = 0.0507571でギリ有意差があるといえない
-exp(result$coefficients)
+# 大卒の方が1.69倍合格しやすい...が有意差なしとなっているためこの数字は信ぴょう性なし
+# exp(result$coefficients)
 
-#t検定は出来ない
-#ただ、前提時要件があって、2群が正規分布していることが必要です。サンプルを選んだときに、無作為抽出していたり、サンプル数が1000ほどあれば、正規分布を想定できます。
+#https://tamanobi.hatenablog.com/entry/2018/06/09/192810
