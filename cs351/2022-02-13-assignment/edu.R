@@ -1,6 +1,8 @@
 library(ggplot2)
+library(broom)
+library(dplyr)
 
-file_path = "./assets/engineer-career-data-arranged2.csv"
+file_path = "./assets/engineer-career-data-arranged.csv"
 dataset <- read.csv(file_path, header = T)
 head(dataset)
 attach(dataset)
