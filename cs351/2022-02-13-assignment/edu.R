@@ -16,5 +16,9 @@ hs_jo_mean <- mean(hs_graduated_person$job.offer)
 result <- glm(formula = job.offer ~ study.load + final.education, data=dataset)
 result
 
+#オッズ比 edu 1.052067
+#大卒はそれ以下の学歴よりも合格率が5%上がる...という可能性が示せそうだが、p-val = 0.0507571でギリ有意差があるといえない
+exp(result$coefficients)
+
 #t検定は出来ない
 #ただ、前提時要件があって、2群が正規分布していることが必要です。サンプルを選んだときに、無作為抽出していたり、サンプル数が1000ほどあれば、正規分布を想定できます。
