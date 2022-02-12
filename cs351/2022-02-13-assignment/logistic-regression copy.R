@@ -1,15 +1,27 @@
-# 「エンジニアになるのに学歴は不要」という仮説を棄却できるか？
+#年齢によって合格率はかわるか？
 
 library(ggplot2)
 library(broom)
 library(dplyr)
 
 file_path = "./assets/engineer-career-data-arranged.csv"
-dataset <- read.csv(file_path, header = T)
+dataset <- read.csv(file_path)
 head(dataset)
-attach(dataset)
+#attach(dataset)
 
-# 勉強時間によって合格率はかわるか？
+trans_age <- function(val){
+  output <- NULL
+  if(val < 30){
+    output <- 0
+  } else {
+    output <- 1
+  }
+  return(output)
+}
+
+mutate(dataset, age2 = trans_age(age))
+       
+  # 勉強時間によって合格率はかわるか？
 # study load p-val = 0.0512
 # 有意差ギリなし
 result <- glm(formula = job.offer ~ study.load, data = dataset, family="binomial")
