@@ -1,16 +1,31 @@
-#slop-categorical-multiple-regression
-#年齢によって内定数はかわるか？
+#Load libraries
 library(ggplot2)
 library(broom)
 library(dplyr)
 
-file_path = "./assets/engineer-career-data-arranged3.csv"
+#Import dataset
+file_path = "./assets/engineer-career-data-arranged2.csv"
 dataset <- read.csv(file_path, header = T)
 head(dataset)
 attach(dataset)
 
+#Logistic regression with all variables
 result_all <- glm(formula = job.offer ~ ., data = dataset, family="binomial")
 summary(result_all)
+
+#Logistic regression with study.load
+result <- glm(formula = job.offer ~ study.load, data = dataset, family="binomial")
+summary(result)
+
+#plot
+plot_view <- ggplot(dataset,aes(x=study.load, y=job.offer)) +
+  geom_point() + 
+  geom_smooth(method = "glm", method.args= list(family="binomial"))
+plot_view
+
+#Odds and Confidence interval
+exp(result$coefficients)
+exp(confint(result, level = 0.95))
 
 #Coefficients:
 #Estimate Std. Error z value Pr(>|z|)  
@@ -20,20 +35,6 @@ summary(result_all)
 #final.education  4.189e-01  4.969e-01   0.843   0.3992  
 #year            -9.354e-01  4.281e-01  -2.185   0.0289 *
 #  study.load       1.436e-03  6.891e-04   2.085   0.0371 *
-
-#> study.load
-result <- glm(formula = job.offer ~ study.load, data = dataset, family="binomial")
-summary(result)
-
-cor(dataset$job.offer, dataset$study.load)
-
-plot_view <- ggplot(dataset,aes(x=study.load, y=job.offer)) +
-  geom_point() + 
-  geom_smooth(method = "glm", method.args= list(family="binomial"))
-plot_view
-
-exp(result$coefficients)
-exp(confint(result, level = 0.95))
 
 #Odds
 #(Intercept)  study.load 
