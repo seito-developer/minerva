@@ -1,16 +1,26 @@
-#slop-categorical-multiple-regression
-#年齢によって内定数はかわるか？
+#Load libraries
 library(ggplot2)
 library(broom)
 library(dplyr)
 
+#Import dataset
 file_path = "./assets/engineer-career-data-arranged.csv"
 dataset <- read.csv(file_path, header = T)
 head(dataset)
 attach(dataset)
 
+#multiple linear regression
 result <- lm(formula = job.offer ~ ., data=dataset)
 summary(result)
+
+
+#single linear regression
+result <- lm(formula = job.offer ~ entry, data=dataset)
+summary(result)
+
+#plot
+plot(result)
+abline(result, lwd=3)
 
 #Coefficients:
 #Estimate Std. Error t value Pr(>|t|)    
