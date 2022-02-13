@@ -1,5 +1,4 @@
 #slop-categorical-multiple-regression
-#年齢によって内定数はかわるか？
 library(ggplot2)
 library(broom)
 library(dplyr)
@@ -9,15 +8,13 @@ dataset <- read.csv(file_path, header = T)
 head(dataset)
 attach(dataset)
 
-result <- lm(formula = job.offer ~ entry, data=dataset)
-summary(result)
-cor(dataset$job.offer, dataset$entry)
-
 #plot
 plot_dataset <- data.frame(job.offer = dataset$job.offer, entry = dataset$entry)
-plot(plot_dataset)
+result <- lm(formula = job.offer ~ entry, data=plot_dataset)
+summary(result)
+plot(result)
 abline(result, lwd=3)
-
+#cor(dataset$job.offer, dataset$entry)
 #Coefficients:
 #  Estimate Std. Error t value Pr(>|t|)    
 #(Intercept) 1.421168   0.122332   11.62  < 2e-16 ***
@@ -31,14 +28,11 @@ abline(result, lwd=3)
 #相関係数 0.224234
 
 dataset_20 <- dataset[dataset$age<=29,]
-dataset_20
-result <- lm(formula = job.offer ~ entry, data=dataset_20)
+plot_dataset_20 <- data.frame(job.offer = dataset_20$job.offer, entry = dataset_20$entry)
+result <- lm(formula = job.offer ~ entry, data=plot_dataset_20)
 summary(result)
 cor(dataset_20$job.offer, dataset_20$entry)
-
-#plot
-plot_dataset <- data.frame(job.offer = dataset_20$job.offer, entry = dataset_20$entry)
-plot(plot_dataset)
+plot(result)
 abline(result, lwd=3)
 
 #Coefficients:
@@ -53,7 +47,12 @@ abline(result, lwd=3)
 #F-statistic: 9.012 on 1 and 150 DF,  p-value: 0.003144
 #相関係数 0.2380589
 
-result <- lm(formula = job.offer ~ year, data=dataset)
-summary(result)
-cor(dataset$job.offer, dataset$year)
+
+# predict
+new_data <- data.frame(
+  job.offer = 1,
+  entry = 30
+)
+new_data
+predict(result, new_data, level = 0.95, interval="confidence")
 
