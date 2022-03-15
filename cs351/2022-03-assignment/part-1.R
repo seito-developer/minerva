@@ -1,5 +1,6 @@
 install.packages("ISLR")
 library(ISLR)
+library(ggplot2)
 data(Default) #10000 observations
 set.seed(123)
 # sample 80% of the observations for the training set
@@ -21,10 +22,17 @@ mean(test.set$income)     # 33526.7
 prob <- c()
 for (item in training.set$student) {
   if(item == 'Yes'){
-    prob <- c(p, 1)
+    prob <- c(prob, 1)
   } else {
-    prob <- c(p, 0)
+    prob <- c(prob, 0)
   }
 }
 
+result <- glm(formula = prob ~ training.set$income + training.set$balance, data = training.set, family="binomial")
+summary(result)
+
+plot_view <- ggplot(training.set,aes(x=training.set$income, y=prob)) +
+  geom_point() + 
+  geom_smooth(method = "glm", method.args= list(family="binomial"))
+plot_view
 
