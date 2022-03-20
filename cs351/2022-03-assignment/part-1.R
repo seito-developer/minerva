@@ -1,6 +1,9 @@
+library(data.table)
 install.packages("ISLR")
 library(ISLR)
 library(ggplot2)
+install.packages("InformationValue")
+library(InformationValue)
 data(Default) #10000 observations
 set.seed(123)
 # sample 80% of the observations for the training set
@@ -11,28 +14,39 @@ test.set <- Default[-training.set.index,]
 # confirm that your results match mine
 mean(training.set$income) # 33514.55
 mean(test.set$income)     # 33526.7
-### Alternatively, just download the data set:
-#write.csv(training.set, file = "training.set_Default.csv", row.names = FALSE)
-###training set download link,  in .csv format: https://drive.google.com/file/d/1Ps_3w-jUfJs0hA4rCpbyZuPJuOA6LItw/view?usp=sharing
-#write.csv(test.set, file = "test.set_Default.csv", row.names = FALSE)
-###test set download link, in .csv format: https://drive.google.com/file/d/1WmiCfb1fhSmWBfxGYL5A99FQ_Tmz2EaK/view?usp=sharing
-
 
 # Convert Y/N to 1/0
-prob <- c()
-for (item in training.set$student) {
-  if(item == 'Yes'){
-    prob <- c(prob, 1)
-  } else {
-    prob <- c(prob, 0)
+binary_converter <- function(data){
+  prob <- c()
+  for (item in data) {
+    if(item == 'Yes'){
+      prob <- c(prob, 1)
+    } else {
+      prob <- c(prob, 0)
+    }
   }
+  return(prob)
 }
 
-result <- glm(formula = prob ~ training.set$income + training.set$balance, data = training.set, family="binomial")
-summary(result)
+training_def <- binary_converter(training.set$default)
+new_training_data = data.table(default = training_def, income = training.set$income, balance = training.set$balance)
+new_training_data
+my_model <- glm(formula = training_def ~ training.set$income + training.set$balance, data = new_training_data, family="binomial")
+summary(my_model)
 
-plot_view <- ggplot(training.set,aes(x=training.set$income, y=prob)) +
+plot_view <- ggplot(training.set,aes(x=training.set$balance, y=training_def)) +
   geom_point() + 
   geom_smooth(method = "glm", method.args= list(family="binomial"))
 plot_view
+
+
+#---
+test_def <- binary_converter(test.set$default)
+new_test_data = data.table(default = test_def, income = test.set$income, balance = test.set$balance)
+new_test_data
+prediction <- predict(my_model, newData = new_test_data, type="response")
+
+optimal <- optimalCutoff(new_test_data$default, prediction)[1]
+
+confusionMatrix(new_test_data$default, prediction)
 
