@@ -1,12 +1,9 @@
 ###### Preparation START ######
 install.packages("ISLR")
-install.packages("InformationValue")
 install.packages("dplyr")
 
 library(data.table)
 library(ISLR)
-library(ggplot2)
-library(InformationValue)
 library(dplyr)
 
 data(Default) #10000 observations
@@ -39,7 +36,7 @@ matrix <- as.matrix(table(factor(prediction>0.5, levels=c(F, T)), sampled_test$d
 matrix
 
 # Show error rate
-(conf_matrix[1,2] + conf_matrix[2,1]) / sum(conf_matrix)
+(matrix[1,2] + matrix[2,1]) / sum(matrix)
 
 #Output the rate of default
 prediction_arranged <- ifelse(prediction >= 0.5, 1, 0)

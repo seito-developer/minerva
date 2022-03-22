@@ -1,23 +1,16 @@
 ###### Preparation START ######
 install.packages("ISLR")
-install.packages("InformationValue")
 install.packages("dplyr")
 
 library(data.table)
 library(ISLR)
-library(ggplot2)
-library(InformationValue)
 library(dplyr)
 
 data(Default) #10000 observations
 set.seed(123)
-
 training.set.index <- sample(1:10000, 8000, replace = FALSE) # sample 80% of the observations for the training set
 training.set <- Default[training.set.index,] # the remaining 20% are for the test set
 test.set <- Default[-training.set.index,] # confirm that your results match mine
-
-mean(training.set$income) # 33514.55
-mean(test.set$income)     # 33526.7
 ###### Preparation END ######
 
 ###### (1) Extra START ######
@@ -49,7 +42,7 @@ matrix <- as.matrix(table(factor(prediction>0.5, levels=c(F, T)), sampled_test$d
 matrix
 
 # Show error rate
-(conf_matrix[1,2] + conf_matrix[2,1]) / sum(conf_matrix)
+(matrix[1,2] + matrix[2,1]) / sum(matrix)
 
 #Output the rate of default
 prediction_arranged <- ifelse(prediction >= 0.5, 1, 0)
