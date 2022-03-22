@@ -33,6 +33,7 @@ sampled_test$student <- ifelse(sampled_test$student=="Yes", 1, 0)
 
 #Generate the confusion matrix
 prediction <- predict(my_model, newData = sampled_test, type="response")
+
 matrix <- confusionMatrix(sampled_test$default, prediction)
 matrix
 (matrix$`0`[2] + matrix$`1`[1]) / (matrix$`0`[1] + matrix$`0`[2] + matrix$`1`[1] + matrix$`1`[2])
@@ -46,14 +47,17 @@ sum(prediction_arranged)/length(prediction_arranged)
 install.packages("rgenoud")
 library(rgenoud)
 
+conf_matrix <- as.matrix(table(factor(prediction>0.5, levels=c(F, T)), sampled_test$default))
+conf_matrix
+
 len <- length(prediction_arranged)
 find_threshold <- function(x){
-  my_model <- glm(formula = sampled_training$default ~ ., data = sampled_training, family="binomial")
-  prediction <- predict(my_model, newData = sampled_test, type="response")
-  my_model$aic
-  new_data <- ifelse(prediction >= x, 1, 0)
-  return(new_data)
+  conf_matrix <- as.matrix(table(factor(prediction>x, levels=c(F, T)), sampled_test$default))
+  conf_matrix
+  return()
 }
+conf_matrix <- table(factor(prediction>0.00005, levels=c(F, T)), sampled_test$default)
+as.matrix(conf_matrix)
 
 genoud_result <- genoud(find_threshold, nvars = 1, max = FALSE)
 genoud_result
