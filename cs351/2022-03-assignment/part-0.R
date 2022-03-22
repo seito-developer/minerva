@@ -21,6 +21,7 @@ f1 <- function(x) {
 # once you have f1, then use the genetic algorithm to find the MINIMUM
 # f1 が得られたら、次に遺伝的アルゴリズムで MINIMUM を求めます。
 GA <- genoud(f1, nvars = 1, max = FALSE) # max = FALSE b/c it's a minimization}
+GA
 ###
 # then, use the 'optim' hill-climbing algorithm:
 # その後、'optim' hill-climbing アルゴリズムを使用します。

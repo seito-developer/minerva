@@ -47,7 +47,7 @@ sampled_test$student <- ifelse(sampled_test$student=="Yes", 1, 0)
 prediction <- predict(my_model_4, newData = sampled_test, type="response")
 matrix <- confusionMatrix(sampled_test$default, prediction)
 matrix
-(matrix$`0`[2] + matrix$`1`[1]) / (matrix$`0`[1] + matrix$`1`[2])
+(matrix$`0`[2] + matrix$`1`[1]) / (matrix$`0`[1] + matrix$`0`[2] + matrix$`1`[1] + matrix$`1`[2])
 
 #Output the rate of default
 prediction_arranged <- ifelse(prediction >= 0.5, 1, 0)
