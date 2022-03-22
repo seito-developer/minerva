@@ -22,6 +22,8 @@ sampling_size = nrow(test.set)
 sampled_training = sample_n(tbl = training.set, size = sampling_size)
 sampled_training$default <- ifelse(sampled_training$default=="Yes", 1, 0)
 sampled_training$student <- ifelse(sampled_training$student=="Yes", 1, 0)
+
+#Run the logistic regression
 my_model <- glm(formula = sampled_training$default ~ ., data = sampled_training, family="binomial")
 result <- summary(my_model)
 result
@@ -33,10 +35,11 @@ sampled_test$student <- ifelse(sampled_test$student=="Yes", 1, 0)
 
 #Generate the confusion matrix
 prediction <- predict(my_model, newData = sampled_test, type="response")
-
-matrix <- confusionMatrix(sampled_test$default, prediction)
+matrix <- as.matrix(table(factor(prediction>0.5, levels=c(F, T)), sampled_test$default))
 matrix
-(matrix$`0`[2] + matrix$`1`[1]) / (matrix$`0`[1] + matrix$`0`[2] + matrix$`1`[1] + matrix$`1`[2])
+
+# Show error rate
+(conf_matrix[1,2] + conf_matrix[2,1]) / sum(conf_matrix)
 
 #Output the rate of default
 prediction_arranged <- ifelse(prediction >= 0.5, 1, 0)
@@ -44,24 +47,35 @@ sum(prediction_arranged)/length(prediction_arranged)
 ###### (1) END ######
 
 ###### (2) START ######
+#load the library
 install.packages("rgenoud")
 library(rgenoud)
 
-conf_matrix <- as.matrix(table(factor(prediction>0.5, levels=c(F, T)), sampled_test$default))
-conf_matrix
+#Call the better 
+my_model_2 <- glm(formula = sampled_training$default ~ sampled_training$student + sampled_training$balance, 
+                  data = sampled_training, family="binomial")
+prediction_2 <- predict(my_model_2, newData = sampled_test, type="response")
 
-len <- length(prediction_arranged)
+#function to find the optimal threshold
 find_threshold <- function(x){
-  conf_matrix <- as.matrix(table(factor(prediction>x, levels=c(F, T)), sampled_test$default))
-  conf_matrix
-  return()
+  conf_matrix <- as.matrix(table(factor(prediction_2>x, levels=c(F, T)), sampled_test$default))
+  error_rate = (conf_matrix[1,2] + conf_matrix[2,1]) / sum(conf_matrix)
+  return(error_rate)
 }
-conf_matrix <- table(factor(prediction>0.00005, levels=c(F, T)), sampled_test$default)
-as.matrix(conf_matrix)
 
-genoud_result <- genoud(find_threshold, nvars = 1, max = FALSE)
-genoud_result
+#Optimize the matrix
+thresholds <- c()
+for (index in 1:100) {
+  genoud_result <- genoud(find_threshold, nvars = 1, max = FALSE) 
+  thresholds <- c(thresholds, genoud_result$par)
+}
+cat('mean:', mean(thresholds), 'min:', min(thresholds), 'max:', max(thresholds))
 
+improved_matrix <- as.matrix(table(factor(prediction_2>mean(thresholds), levels=c(F, T)), sampled_test$default))
+improved_matrix
+
+# Show error rate
+(improved_matrix[1,2] + improved_matrix[2,1]) / sum(improved_matrix)
 ###### (2) END ######
 
 

@@ -45,13 +45,14 @@ sampled_test$student <- ifelse(sampled_test$student=="Yes", 1, 0)
 
 #Generate the confusion matrix
 prediction <- predict(my_model_4, newData = sampled_test, type="response")
-matrix <- confusionMatrix(sampled_test$default, prediction)
+matrix <- as.matrix(table(factor(prediction>0.5, levels=c(F, T)), sampled_test$default))
 matrix
-(matrix$`0`[2] + matrix$`1`[1]) / (matrix$`0`[1] + matrix$`0`[2] + matrix$`1`[1] + matrix$`1`[2])
+
+# Show error rate
+(conf_matrix[1,2] + conf_matrix[2,1]) / sum(conf_matrix)
 
 #Output the rate of default
 prediction_arranged <- ifelse(prediction >= 0.5, 1, 0)
 sum(prediction_arranged)/length(prediction_arranged)
-
 ###### (1) Extra END ######
 
