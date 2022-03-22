@@ -78,5 +78,13 @@ improved_matrix
 (improved_matrix[1,2] + improved_matrix[2,1]) / sum(improved_matrix)
 ###### (2) END ######
 
+###### (3) START ######
+result <- optim(0.5, find_threshold, method = "Brent", lower = -100, upper = 100)
+
+improved_matrix2 <- as.matrix(table(factor(prediction_2>result$par, levels=c(F, T)), sampled_test$default))
+improved_matrix2
+
+(improved_matrix2[1,2] + improved_matrix2[2,1]) / sum(improved_matrix2)
+###### (3) END ######
 
 
