@@ -35,3 +35,7 @@ testData_c <- data.frame(
 
 testData_all <- rbind(testData_a, testData_b, testData_c)
 testData_all
+
+result <- lm(formula = testData_all$gpa_class_a ~ testData_all$asynchronous + testData_all$synchronous, data = testData_all)
+
+
