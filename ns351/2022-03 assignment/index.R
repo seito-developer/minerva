@@ -9,9 +9,10 @@
 #load library
 install.packages("makedummies")
 install.packages("ggplot2")
-library("makedummies")
-library(ggplot2)
+library(makedummies)
+library("ggplot2")
 library(tidyverse)
+library(effsize)
 
 generateDummyData <- function(asynchronous, synchronous, top_score){
   size <- 372
@@ -53,18 +54,22 @@ generateDummyData <- function(asynchronous, synchronous, top_score){
 }
 
 # dummy date
-test_sync <- generateDummyData(0, 1, 80)
+test_sync <- generateDummyData(0, 1, 75)
 test_async <- generateDummyData(1, 0, 70)
-test_blended <- generateDummyData(1, 1, 85)
+test_combined <- generateDummyData(1, 1, 85)
 
-diff <- test_async$class_score_a - test_blended$class_score_a
-ggplot(test_async, aes(x = class_score_a - test_blended$class_score_a)) +
-  geom_density() + 
-  geom_vline(xintercept = mean(diff)) +
-  geom_vline(xintercept = mean(diff) +
-               2 * c(-1,1) * sd(diff)/sqrt(nrow(test_async)), linetype = 2)
+# function for plot with t-test
+plot_test <- function(){
+  diff <- test_async$class_score_a - test_combined$class_score_a
+  ggplot(test_async, aes(x = class_score_a - test_combined$class_score_a)) +
+    geom_density() + 
+    geom_vline(xintercept = mean(diff)) +
+    geom_vline(xintercept = mean(diff) +
+                 2 * c(-1,1) * sd(diff)/sqrt(nrow(test_async)), linetype = 2)
+}
+plot_test()
 
-library(effsize)
+# function for showing cohen's D
 t.test.es <- function(x, y, t.paired = FALSE, es.ci = 0.95, es.paired = FALSE, rm = FALSE)
 {
   t <- t.test(x, y, paired = t.paired)
@@ -72,5 +77,4 @@ t.test.es <- function(x, y, t.paired = FALSE, es.ci = 0.95, es.paired = FALSE, r
   return(list(t,es))
 }
 
-t.test.es(x = test_async$class_score_a, y = test_blended$class_score_a)
-mean(test_blended$class_score_a)
+t.test.es(x = test_sync$class_score_a, y = test_combined$class_score_a)
