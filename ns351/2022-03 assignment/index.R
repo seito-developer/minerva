@@ -10,22 +10,22 @@
 install.packages("makedummies")
 install.packages("ggplot2")
 library("makedummies")
-library("ggplot2")
+library(ggplot2)
 library(tidyverse)
 
 generateDummyData <- function(asynchronous, synchronous, top_score){
-  
+  size <- 372
   mean_scores <- c(top_score * 0.75, top_score * 0.9, top_score)
-  sd <- 5
+  sd <- 7
   
   students_low <- data.frame(
     student_achive = 1,
     asynchronous = rep(asynchronous, size = size),
     synchronous = rep(synchronous, size = size),
     grade = rep(1:4, times = size/4, size = size),
-    gpa_class_a = round(abs(rnorm(size, mean = mean_scores[1], sd = sd))),
-    gpa_class_b = round(abs(rnorm(size, mean = mean_scores[1], sd = sd))),
-    gpa_class_c = round(abs(rnorm(size, mean = mean_scores[1], sd = sd)))
+    class_score_a = round(abs(rnorm(size, mean = mean_scores[1], sd = sd))),
+    class_score_b = round(abs(rnorm(size, mean = mean_scores[1], sd = sd))),
+    class_score_c = round(abs(rnorm(size, mean = mean_scores[1], sd = sd)))
   )
   
   students_mid <- data.frame(
@@ -33,9 +33,9 @@ generateDummyData <- function(asynchronous, synchronous, top_score){
     asynchronous = rep(asynchronous, size = size),
     synchronous = rep(synchronous, size = size),
     grade = rep(1:4, times = size/4, size = size),
-    gpa_class_a = round(abs(rnorm(size, mean = mean_scores[2], sd = sd))),
-    gpa_class_b = round(abs(rnorm(size, mean = mean_scores[2], sd = sd))),
-    gpa_class_c = round(abs(rnorm(size, mean = mean_scores[2], sd = sd)))
+    class_score_a = round(abs(rnorm(size, mean = mean_scores[2], sd = sd))),
+    class_score_b = round(abs(rnorm(size, mean = mean_scores[2], sd = sd))),
+    class_score_c = round(abs(rnorm(size, mean = mean_scores[2], sd = sd)))
   )
   
   students_high <- data.frame(
@@ -43,9 +43,9 @@ generateDummyData <- function(asynchronous, synchronous, top_score){
     asynchronous = rep(asynchronous, size = size),
     synchronous = rep(synchronous, size = size),
     grade = rep(1:4, times = size/4, size = size),
-    gpa_class_a = round(abs(rnorm(size, mean = mean_scores[3], sd = sd))),
-    gpa_class_b = round(abs(rnorm(size, mean = mean_scores[3], sd = sd))),
-    gpa_class_c = round(abs(rnorm(size, mean = mean_scores[3], sd = sd)))
+    class_score_a = round(abs(rnorm(size, mean = mean_scores[3], sd = sd))),
+    class_score_b = round(abs(rnorm(size, mean = mean_scores[3], sd = sd))),
+    class_score_c = round(abs(rnorm(size, mean = mean_scores[3], sd = sd)))
   )
   generated_data <- rbind(students_low, students_mid, students_high)
   
@@ -53,39 +53,24 @@ generateDummyData <- function(asynchronous, synchronous, top_score){
 }
 
 # dummy date
-testData_synchronous <- generateDummyData(0, 1, 80)
-testData_asynchronous <- generateDummyData(1, 0, 70)
-testData_blended <- generateDummyData(1, 1, 85)
+test_sync <- generateDummyData(0, 1, 80)
+test_async <- generateDummyData(1, 0, 70)
+test_blended <- generateDummyData(1, 1, 85)
 
+diff <- test_async$class_score_a - test_blended$class_score_a
+ggplot(test_async, aes(x = class_score_a - test_blended$class_score_a)) +
+  geom_density() + 
+  geom_vline(xintercept = mean(diff)) +
+  geom_vline(xintercept = mean(diff) +
+               2 * c(-1,1) * sd(diff)/sqrt(nrow(test_async)), linetype = 2)
 
+library(effsize)
+t.test.es <- function(x, y, t.paired = FALSE, es.ci = 0.95, es.paired = FALSE, rm = FALSE)
+{
+  t <- t.test(x, y, paired = t.paired)
+  es <- effsize::cohen.d(x, y, conf.level = es.ci, na.rm = rm, paired = es.paired)
+  return(list(t,es))
+}
 
-testData_all
-#regression
-testData_all <- rbind(testData_a, testData_b, testData_c)
-result <- lm(formula = testData_all$gpa_class_a ~ testData_all$asynchronous + testData_all$synchronous, data = testData_all)
-result
-#cohen's D
-#testData_a_arranged <- data.frame(testData_a$gpa_class_a
-ES <- 0.8
-#ES*1 + 1
-ggplot(testData_c$gpa_class_a, aes(x,y, color="Asynchronous")) +
-  # add line for treatment group
-  geom_line(size=1) + 
-  # add line for control group
-  geom_line(testData_c$gpa_class_c, aes(color="Combination"),size=1) +
-  # shade overlap
-  #geom_polygon(aes(color=NULL), data=testData_c$gpa_class_a, fill="red", alpha=I(4/10),
-  #             show_guide=F) +
-  # add vlines for group means
-  #geom_vline(xintercept = 1, linetype="dotted") + 
-  #geom_vline(xintercept = mean1, linetype="dotted") + 
-  # add plot title
-  #opts(title=paste("Visualizing Effect Sizes 
-  #    (Cohen's d = ",ES,"; U3 = ",u3,")", sep="")) +
-  # change colors and legend annotation
-  scale_color_manual("Group", 
-                     values= c("Asynchronous" = "black","Combination" = "red")) +
-  # remove axis labels
-  ylab(NULL) + xlab(NULL)
-
-ggplot(data = testData_c) + aes(x = displ, y = gpa_class_a)
+t.test.es(x = test_async$class_score_a, y = test_blended$class_score_a)
+mean(test_blended$class_score_a)
