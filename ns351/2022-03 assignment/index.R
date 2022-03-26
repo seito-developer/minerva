@@ -80,6 +80,10 @@ t.test.es <- function(x, y, t.paired = FALSE, es.ci = 0.95, es.paired = FALSE, r
 plot_test("Class A - Synchronous vs Combined", test_sync$class_score_a, test_combined$class_score_a, test_sync)
 t.test.es(x = test_sync$class_score_a, y = test_combined$class_score_a)
 
+h1 <- hist(test_sync$class_score_a)
+h2 <- hist(test_combined$class_score_a)
 
-
+plot(0, 0, type="n", xlim=c(0,100), ylim=c(0, 200), xlab="", ylab="")
+lines(h1$mids, h1$counts, col="red")
+lines(h2$mids, h2$counts, col="blue")
 
