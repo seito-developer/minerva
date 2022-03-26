@@ -1,11 +1,3 @@
-# can combine 1 row (asynchronous + synchronous)
-# 
-
-# SNUCMの医学部1年生、2年生、3年生、4年生の学生を、以下のように分類しました。
-# 学習方法は、100% Asynchronous (非同期式のみ), 100%(非同期式のみ), 100%(非同期式のみ)の3グループ。
-# 2年以内にすべての必修科目で適用
-# 学業成績（過去2学期の平均GPA）のカテゴリー（低、中、高）に基づく。大学側が「不合格」と判断した学生は除外する。
-
 #load library
 install.packages("makedummies")
 install.packages("ggplot2")
@@ -14,6 +6,7 @@ library("ggplot2")
 library(tidyverse)
 library(effsize)
 
+#function for generating dummy data
 generateDummyData <- function(asynchronous, synchronous, top_score){
   size <- 372
   mean_scores <- c(top_score * 0.75, top_score * 0.9, top_score)
@@ -53,23 +46,12 @@ generateDummyData <- function(asynchronous, synchronous, top_score){
   return(generated_data)
 }
 
-# dummy date
+# generate dummy data for each groups
 test_sync <- generateDummyData(0, 1, 75)
 test_async <- generateDummyData(1, 0, 70)
 test_combined <- generateDummyData(1, 1, 85)
 
-# function for plot with t-test
-plot_test <- function(title, target1, target2, base){
-  diff <- target1 - target2
-  ggplot(base, aes(x = diff)) +
-    geom_density() + 
-    geom_vline(xintercept = mean(diff)) +
-    geom_vline(xintercept = mean(diff) +
-                 2 * c(-1,1) * sd(diff)/sqrt(nrow(base)), linetype = 2) +
-    labs(title = title)
-}
-
-# function for showing cohen's D
+# function for showing t-test & cohen's D result
 t.test.es <- function(x, y, t.paired = FALSE, es.ci = 0.95, es.paired = FALSE, rm = FALSE)
 {
   t <- t.test(x, y, paired = t.paired)
@@ -77,15 +59,22 @@ t.test.es <- function(x, y, t.paired = FALSE, es.ci = 0.95, es.paired = FALSE, r
   return(list(t,es))
 }
 
-plot_test("Class A - Synchronous vs Combined", test_sync$class_score_a, test_combined$class_score_a, test_sync)
+
 t.test.es(x = test_sync$class_score_a, y = test_combined$class_score_a)
 
-h1 <- hist(test_sync$class_score_a)
-h2 <- hist(test_async$class_score_a)
-h3 <- hist(test_combined$class_score_a)
+# function for plot
+plot_test <- function(title){
+  h1 <- hist(test_sync$class_score_a)
+  h2 <- hist(test_async$class_score_a)
+  h3 <- hist(test_combined$class_score_a)
+  
+  plot(0, 0, type="n", xlim=c(0,100), ylim=c(0, 200), xlab="", ylab="", )
+  lines(h1$mids, h1$counts, col="red")
+  lines(h2$mids, h2$counts, col="blue")
+  lines(h3$mids, h3$counts, col="green")
+  title(main = title)
+  legend("topleft", c("sync","async","combined"), fill=c("red", "blue", "green"))
+}
 
-plot(0, 0, type="n", xlim=c(0,100), ylim=c(0, 200), xlab="", ylab="", )
-lines(h1$mids, h1$counts, col="red")
-lines(h2$mids, h2$counts, col="blue")
-lines(h3$mids, h3$counts, col="green")
-title(main = "Main title")
+plot_test("Class A")
+
