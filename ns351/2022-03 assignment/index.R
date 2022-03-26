@@ -59,15 +59,15 @@ test_async <- generateDummyData(1, 0, 70)
 test_combined <- generateDummyData(1, 1, 85)
 
 # function for plot with t-test
-plot_test <- function(){
-  diff <- test_async$class_score_a - test_combined$class_score_a
-  ggplot(test_async, aes(x = class_score_a - test_combined$class_score_a)) +
+plot_test <- function(title, target1, target2, base){
+  diff <- target1 - target2
+  ggplot(base, aes(x = diff)) +
     geom_density() + 
     geom_vline(xintercept = mean(diff)) +
     geom_vline(xintercept = mean(diff) +
-                 2 * c(-1,1) * sd(diff)/sqrt(nrow(test_async)), linetype = 2)
+                 2 * c(-1,1) * sd(diff)/sqrt(nrow(base)), linetype = 2) +
+    labs(title = title)
 }
-plot_test()
 
 # function for showing cohen's D
 t.test.es <- function(x, y, t.paired = FALSE, es.ci = 0.95, es.paired = FALSE, rm = FALSE)
@@ -77,4 +77,9 @@ t.test.es <- function(x, y, t.paired = FALSE, es.ci = 0.95, es.paired = FALSE, r
   return(list(t,es))
 }
 
+plot_test("Class A - Synchronous vs Combined", test_sync$class_score_a, test_combined$class_score_a, test_sync)
 t.test.es(x = test_sync$class_score_a, y = test_combined$class_score_a)
+
+
+
+
