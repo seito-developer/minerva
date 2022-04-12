@@ -22,9 +22,24 @@ new_age <- ifelse(dataset[,2]=="15歳以下", 15,
                                                                                                               ifelse(dataset[,2]=="76 - 80歳", 78, 
                                                                                                                      ifelse(dataset[,2]=="81歳以上", 81, FALSE 
                           )))))))))))))))
-new_age
-
-# function
+# experience
+new_experience <- c()
+new_experience <- ifelse(dataset[,4]=="ない", 1,
+                         ifelse(dataset[,4]=="1年未満", 2,
+                                ifelse(dataset[,4]=="1年以上3年未満", 3,
+                                       ifelse(dataset[,4]=="3年以上5年未満", 4,
+                                              ifelse(dataset[,4]=="5年以上", 5, FALSE
+                                              )))))
+# lang
+new_lang <- c()
+new_lang <- ifelse(dataset[,5]=="強く同意する（絶対に日本語がいい）", 5,
+                   ifelse(dataset[,5]=="やや同意する（できれば日本語がいい）", 4,
+                          ifelse(dataset[,5]=="どちらとも言えない（日本語でも英語でも気にしない）", 3,
+                                 ifelse(dataset[,5]=="あまり同意しない（できれば英語がいい）", 2,
+                                        ifelse(dataset[,5]=="まったく同意しない（絶対に英語がいい）", 1, FALSE
+                                        )))))
+                         
+## types
 convert_eval_to_score <- function(target_col){
   new_col <- ifelse(target_col=="強く同意する", 5,
                 ifelse(target_col=="やや同意する", 4,
@@ -35,7 +50,6 @@ convert_eval_to_score <- function(target_col){
   return(new_col)
 }
 
-## types
 new_book <- c(convert_eval_to_score(dataset[,6]))
 new_text <- c(convert_eval_to_score(dataset[,7]))
 new_video <- c(convert_eval_to_score(dataset[,8]))
