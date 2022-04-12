@@ -13,10 +13,11 @@ attach(dataset)
 result <- lm(formula = job.offer ~ ., data=dataset)
 summary(result)
 
-
 #single linear regression
 result <- lm(formula = job.offer ~ entry, data=dataset)
 summary(result)
+
+ggplot(dataset,aes(x=entry, y=job.offer)) +
 
 #plot
 plot(result)
