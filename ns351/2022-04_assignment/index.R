@@ -56,3 +56,17 @@ new_video <- c(convert_eval_to_score(dataset[,8]))
 new_console <- c(convert_eval_to_score(dataset[,9]))
 new_live <- c(convert_eval_to_score(dataset[,10]))
 
+# build new dataset
+new_dataset <- data.frame(
+  age = new_age,
+  experience = new_experience,
+  lang = new_lang,
+  book = new_book,
+  text = new_text,
+  video = new_video,
+  console = new_console,
+  live = new_live
+)
+new_dataset
+
+
