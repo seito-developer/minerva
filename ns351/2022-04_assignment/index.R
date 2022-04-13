@@ -100,10 +100,11 @@ new_table = data.frame(
 )
 new_table
 length(eval)
-colnames(new_table) <- c("strong_disagree", "disagree", "neigther", "agree", "strong_agree")
-rownames(new_table) <- c("book", "text", "video", "live", "console")
-barplot(t(new_table), legend = TRUE)
-
+colnames(new_table) <- rev(eval)
+rownames(new_table) <- items
+par(xpd=TRUE) 
+barplot(t(new_table), legend = FALSE)
+legend("topright", legend=rev(eval), fill=c("#000000", "#333333", "#666666", "#999999", "#eeeeee"))
 
 ## draw
 selected_col <- new_table %>%
