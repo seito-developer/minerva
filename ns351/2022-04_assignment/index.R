@@ -1,3 +1,8 @@
+library("dplyr")
+library("tidyr")
+library("ggplot2")
+library("stringr")
+
 file_path = "./dataset.csv"
 dataset <- read.csv(file_path, header = T)
 head(dataset)
@@ -31,22 +36,24 @@ new_experience <- ifelse(dataset[,4]=="ない", 1,
                                               ifelse(dataset[,4]=="5年以上", 5, FALSE
                                               )))))
 # lang
+eval_data <- c("strong_disagree", "disagree", "neigther", "agree", "strong_agree")
+
 new_lang <- c()
-new_lang <- ifelse(dataset[,5]=="強く同意する（絶対に日本語がいい）", 5,
-                   ifelse(dataset[,5]=="やや同意する（できれば日本語がいい）", 4,
-                          ifelse(dataset[,5]=="どちらとも言えない（日本語でも英語でも気にしない）", 3,
-                                 ifelse(dataset[,5]=="あまり同意しない（できれば英語がいい）", 2,
-                                        ifelse(dataset[,5]=="まったく同意しない（絶対に英語がいい）", 1, FALSE
+new_lang <- ifelse(dataset[,5]=="強く同意する（絶対に日本語がいい）", eval_data[5],
+                   ifelse(dataset[,5]=="やや同意する（できれば日本語がいい）", eval_data[4],
+                          ifelse(dataset[,5]=="どちらとも言えない（日本語でも英語でも気にしない）", eval_data[3],
+                                 ifelse(dataset[,5]=="あまり同意しない（できれば英語がいい）", eval_data[2],
+                                        ifelse(dataset[,5]=="まったく同意しない（絶対に英語がいい）", eval_data[1], FALSE
                                         )))))
-                         
+
 ## types
 convert_eval_to_score <- function(target_col){
-  new_col <- ifelse(target_col=="強く同意する", 5,
-                ifelse(target_col=="やや同意する", 4,
-                       ifelse(target_col=="どちらとも言えない", 3,
-                              ifelse(target_col=="あまり同意しない", 2,
-                                     ifelse(target_col=="まったく同意しない", 1, FALSE
-                                     )))))
+  new_col <- ifelse(target_col=="強く同意する", eval_data[5],
+                    ifelse(target_col=="やや同意する", eval_data[4],
+                           ifelse(target_col=="どちらとも言えない", eval_data[3],
+                                  ifelse(target_col=="あまり同意しない", eval_data[2],
+                                         ifelse(target_col=="まったく同意しない", eval_data[1], FALSE
+                                         )))))
   return(new_col)
 }
 
@@ -67,6 +74,65 @@ new_dataset <- data.frame(
   console = new_console,
   live = new_live
 )
-new_dataset
+
+scoring <- function(item){
+  score <- c()
+  for (index in 1:5) {
+    score = c(score, sum(str_count(item, eval_data[index])))
+  }
+  return(score)
+}
+
+book_score = scoring(new_dataset$book)
+text_score = scoring(new_dataset$text)
+video_score = scoring(new_dataset$video)
+live_score = scoring(new_dataset$live)
+console_score = scoring(new_dataset$console)
+
+items <- c("book", "text", "video", "live", "console")
+
+new_table = data.frame(
+  strong_disagree =  c(book_score[1], text_score[1], video_score[1], live_score[1], console_score[1]),
+  disagree =  c(book_score[2], text_score[2], video_score[2], live_score[2], console_score[2]),
+  neigther =  c(book_score[3], text_score[3], video_score[3], live_score[3], console_score[3]),
+  agree =  c(book_score[4], text_score[4], video_score[4], live_score[4], console_score[4]),
+  strong_agree =  c(book_score[5], text_score[5], video_score[5], live_score[5], console_score[5])
+)
+new_table
+length(eval)
+colnames(new_table) <- c("strong_disagree", "disagree", "neigther", "agree", "strong_agree")
+rownames(new_table) <- c("book", "text", "video", "live", "console")
+barplot(t(new_table), legend = TRUE)
 
 
+## draw
+selected_col <- new_table %>%
+  select(book_score, text_score, video_score, live_score, console_score)
+selected_col
+
+selected_new_dataset <- new_dataset %>%
+  select(book, text, video, live, console)
+
+p <- ggplot(selected_new_dataset, aes(x="items", y="score"))
+p + geom_bar(stat="identity", aes(fill="subject")) + scale_x_discrete(limits=eval)
+
+
+ggplot(new_table, aes(x=book_score + text_score + video_score + live_score + console_score, y=eval_data, fill="Survived")) +
+  geom_col(position="stack")
+
+
+#barplot(1:5, selected_col$book_score, xlab="Percentage", ylab="Proportion")
+
+x <- data.frame(
+  cell   = c("A", "A", "B", "B", "C", "C"),
+  sample = c("A1", "A2", "B1", "B2", "C1", "C2"),
+  weight = c(0.32, 0.33, 0.21, 0.22, 0.37, 0.36)
+)
+x
+
+
+hist_data <- new_dataset %>%
+  select(book, text, video, live, console) %>%
+  gather(key = race, value = score, question)
+
+ggplot(hist_data) + geom_col(mapping = aes(x = score, question, fill = new_dataset))
