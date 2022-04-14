@@ -99,41 +99,22 @@ new_table = data.frame(
   strong_agree =  c(book_score[5], text_score[5], video_score[5], live_score[5], console_score[5])
 )
 new_table
-length(eval)
+
 colnames(new_table) <- rev(eval)
 rownames(new_table) <- items
 par(xpd=TRUE) 
-barplot(t(new_table), legend = FALSE)
+plot <- barplot(t(new_table), legend = FALSE)
+text(plot,)
 legend("topright", legend=rev(eval), fill=c("#000000", "#333333", "#666666", "#999999", "#eeeeee"))
 
-## draw
-selected_col <- new_table %>%
-  select(book_score, text_score, video_score, live_score, console_score)
-selected_col
+new_table %>% 
+  group_by(items,rev(eval)) %>% 
+  ggplot(aes(x = items,y = rev(eval), fill = items,label = scales::comma(rev(eval)))) +
+  geom_bar(stat = "identity") +
+  scale_fill_brewer(palette='Set1') +
+  geom_text(position = position_stack(vjust = .5))
 
-selected_new_dataset <- new_dataset %>%
-  select(book, text, video, live, console)
+#ggplot(new_table,aes(x=factor(items),fill=factor(rev(eval))))+
+#  geom_bar()+
+#  geom_text(aes(label=..count..),stat="count",position=position_stack(0.5))
 
-p <- ggplot(selected_new_dataset, aes(x="items", y="score"))
-p + geom_bar(stat="identity", aes(fill="subject")) + scale_x_discrete(limits=eval)
-
-
-ggplot(new_table, aes(x=book_score + text_score + video_score + live_score + console_score, y=eval_data, fill="Survived")) +
-  geom_col(position="stack")
-
-
-#barplot(1:5, selected_col$book_score, xlab="Percentage", ylab="Proportion")
-
-x <- data.frame(
-  cell   = c("A", "A", "B", "B", "C", "C"),
-  sample = c("A1", "A2", "B1", "B2", "C1", "C2"),
-  weight = c(0.32, 0.33, 0.21, 0.22, 0.37, 0.36)
-)
-x
-
-
-hist_data <- new_dataset %>%
-  select(book, text, video, live, console) %>%
-  gather(key = race, value = score, question)
-
-ggplot(hist_data) + geom_col(mapping = aes(x = score, question, fill = new_dataset))
