@@ -104,17 +104,18 @@ colnames(new_table) <- rev(eval)
 rownames(new_table) <- items
 par(xpd=TRUE) 
 plot <- barplot(t(new_table), legend = FALSE)
-text(plot,)
+
+book_mean <- sum(new_table[1,])
+text_mean <- sum(new_table[2,])
+video_mean <- sum(new_table[3,])
+live_mean <- sum(new_table[4,])
+console_mean <- sum(new_table[5,])
+
+text(0.7,100,paste("Score:",book_mean),pos=1)
+text(1.9,100,paste("Score:",text_mean),pos=1)
+text(3.1,100,paste("Score:",video_mean),pos=1)
+text(4.3,100,paste("Score:",live_mean),pos=1)
+text(5.5,100,paste("Score:",console_mean),pos=1)
+
 legend("topright", legend=rev(eval), fill=c("#000000", "#333333", "#666666", "#999999", "#eeeeee"))
-
-new_table %>% 
-  group_by(items,rev(eval)) %>% 
-  ggplot(aes(x = items,y = rev(eval), fill = items,label = scales::comma(rev(eval)))) +
-  geom_bar(stat = "identity") +
-  scale_fill_brewer(palette='Set1') +
-  geom_text(position = position_stack(vjust = .5))
-
-#ggplot(new_table,aes(x=factor(items),fill=factor(rev(eval))))+
-#  geom_bar()+
-#  geom_text(aes(label=..count..),stat="count",position=position_stack(0.5))
 
