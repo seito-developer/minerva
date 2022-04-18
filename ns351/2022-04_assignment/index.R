@@ -104,7 +104,6 @@ colnames(new_table) <- rev(eval)
 rownames(new_table) <- items
 par(xpd=TRUE) 
 plot <- barplot(t(new_table), legend = FALSE, main="Histogram", xlab="Learning Types", ylab="Number of each scores")
-#main="Histogram", xlab="range", ylim=c(0,30), col="#993435")
 
 book_mean <- sum(new_table[1,])
 text_mean <- sum(new_table[2,])
