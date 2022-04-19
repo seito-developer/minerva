@@ -9,7 +9,7 @@ head(dataset)
 
 #### Arrange dataset ####
 
-reasons <- c("quality", "operability", "freshness", "etu", "ets", "ac", "ask", "others", "comb", "prc", "dic")
+reasons <- c("quality", "operability", "freshness", "easy-to-understand", "easy-to-start", "activating", "asking", "others", "combination", "practicality", "dictionary")
 #reasons_col <- c(dataset$book_strength, dataset$text_strength, dataset$video_strength, dataset$console_strength, dataset$live_strength, dataset$book_weakness, dataset$text_weakness, dataset$video_weakness, dataset$console_weakness, dataset$live_weakness)
 reasons_len <- length(reasons)
 dataset$book_strength
@@ -23,7 +23,8 @@ generate_reason_dataset <- function(col, title){
   
   data_frame <- data.frame(reasons, list_values)
   print(data_frame)
-  ggplot(data_frame, aes(x=reorder(reasons,-list_values) , y=list_values)) + geom_bar(stat="identity") + ggtitle(title)
+  ggplot(data_frame, aes(x=reorder(reasons,-list_values) , y=list_values, fill=list_values)) + geom_bar(stat="identity") + ggtitle(title)
 }
 
 generate_reason_dataset(dataset$book_strength, "The Reason of Book Strength")
+
