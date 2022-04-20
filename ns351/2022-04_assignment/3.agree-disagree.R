@@ -132,7 +132,23 @@ division_table
 rownames(division_table) <- c("dis_agree", "agree")
 division_table
 t(new_table)
-plot <- barplot(t(t(division_table)), legend = FALSE, main="The Rate of Evaluation in Each Types", xlab="Learning Types", ylab="Number of each scores", col = rev(c("#BDD7E7","#3182BD")))
+plot <- barplot(t(t(division_table)), legend = FALSE, main="Agree vs Disagree in Each Types", xlab="Learning Types", ylab="Number of each scores", col = rev(c("#BDD7E7","#3182BD")))
 legend("topright", legend=c("agree", "dis_agree"), fill=c("#BDD7E7","#3182BD"))
-brewer.pal(5, "Blues")
+
+text(0.7,30,paste(division_table$book[2]),pos=1)
+text(0.7,5,paste(division_table$book[1]),pos=1)
+
+text(1.9,30,paste(division_table$text[2]),pos=1)
+text(1.9,2,paste(division_table$text[1]),pos=1)
+
+text(3.1,30,paste(division_table$video[2]),pos=1)
+text(3.1,5,paste(division_table$video[1]),pos=1)
+
+text(4.3,30,paste(division_table$console[2]),pos=1)
+text(4.3,4,paste(division_table$console[1]),pos=1)
+
+text(5.5,33,paste(division_table$live[2]),pos=1)
+text(5.5,11,paste(division_table$live[1]),pos=1)
+
+
            
