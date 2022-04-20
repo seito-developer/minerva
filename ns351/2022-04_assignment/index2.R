@@ -2,10 +2,14 @@ library("dplyr")
 library("tidyr")
 library("ggplot2")
 library("stringr")
+library(RColorBrewer)
 
 file_path = "./dataset.csv"
 dataset <- read.csv(file_path, header = T)
 head(dataset)
+
+# Chart Color
+coul <- rev(brewer.pal(5, "Blues"))
 
 reasons <- c("quality", "operability", "freshness", "easy-to-understand", "easy-to-start", "activating", "asking", "others", "combination", "practicality", "dictionary")
 reasons_label <- c("quality", "operability", "freshness", "e-t-u", "e-t-s", "activating", "asking", "others", "combination", "practicality", "dictionary")
@@ -22,7 +26,7 @@ generate_reason_dataset <- function(col, title){
   sum_votes <- sum(list_values)
   
   data_frame <- data.frame(reasons_label, list_values)
-  ggplot(data_frame, aes(x=reorder(reasons_label,-list_values) , y=list_values, fill=list_values)) + geom_bar(stat="identity") + ggtitle(title) + scale_y_continuous(limits = c(0, 10)) + labs(x="Reasons", y="Number o Votes", fill="Votes", caption=paste("Total Votes:",sum_votes))
+  ggplot(data_frame, aes(x=reorder(reasons_label,-list_values) , y=list_values, fill=list_values)) + geom_bar(stat="identity") + scale_colour_brewer(palette = "BuPu", direction = - 1) + ggtitle(title) + scale_y_continuous(limits = c(0, 10)) + labs(x="Reasons", y="Number o Votes", fill="Votes", caption=paste("Total Votes:",sum_votes))
 }
 
 generate_reason_dataset(

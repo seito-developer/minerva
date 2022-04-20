@@ -2,12 +2,14 @@ library("dplyr")
 library("tidyr")
 library("ggplot2")
 library("stringr")
+library(RColorBrewer)
 
 file_path = "./dataset.csv"
 dataset <- read.csv(file_path, header = T)
 head(dataset)
 
-#### Arrange dataset ####
+# Chart Color
+coul <- brewer.pal(5, "Blues")
 
 # age
 new_age <- c()
@@ -112,7 +114,8 @@ x2ratio <- function(x, byrow=FALSE) {
 colnames(new_table) <- rev(eval)
 rownames(new_table) <- items
 par(xpd=TRUE) 
-plot <- barplot(x2ratio(t(new_table)), legend = FALSE, main="The Rate of Evaluation in Each Types", xlab="Learning Types", ylab="Number of each scores")
+
+plot <- barplot(x2ratio(t(new_table)), col=rev(coul) , border="#1C4C7E", legend = FALSE, main="The Rate of Evaluation in Each Types", xlab="Learning Types", ylab="Number of each scores")
 
 x2ratio(t(new_table))
 
@@ -128,5 +131,5 @@ text(3.1,95,paste("Score:",video_mean),pos=1)
 text(4.3,95,paste("Score:",live_mean),pos=1)
 text(5.5,95,paste("Score:",console_mean),pos=1)
 
-legend("topright", legend=rev(eval), fill=c("#000000", "#333333", "#666666", "#999999", "#eeeeee"))
+legend("topright", legend=rev(eval), fill=coul)
 
