@@ -8,8 +8,10 @@ file_path = "./dataset.csv"
 dataset <- read.csv(file_path, header = T)
 head(dataset)
 
-# Chart Color
+# Variables
 coul <- brewer.pal(5, "Blues")
+eval_data <- c("strong_disagree", "disagree", "neigther", "agree", "strong_agree")
+types <- c("book", "text", "video", "console", "live")
 
 # age
 new_age <- c()
@@ -37,8 +39,6 @@ new_experience <- ifelse(dataset[,4]=="ない", 1,
                                        ifelse(dataset[,4]=="3年以上5年未満", 4,
                                               ifelse(dataset[,4]=="5年以上", 5, FALSE
                                               )))))
-# lang
-eval_data <- c("strong_disagree", "disagree", "neigther", "agree", "strong_agree")
 
 new_lang <- c()
 new_lang <- ifelse(dataset[,5]=="強く同意する（絶対に日本語がいい）", eval_data[5],
@@ -85,13 +85,50 @@ scoring <- function(item){
   return(score)
 }
 
-book_score = scoring(new_dataset$book)
-text_score = scoring(new_dataset$text)
-video_score = scoring(new_dataset$video)
-live_score = scoring(new_dataset$live)
-console_score = scoring(new_dataset$console)
+start_col <- 4
+type_cols_len <- ncol(new_dataset)
+scores <- c()
 
-items <- c("book", "text", "video", "live", "console")
+for (i_types in start_col:type_cols_len) {
+  print(i_types)
+  for (i_eval in 1:length(eval_data)) {
+    #print(i_eval)
+    scores <- c(scores, sum(new_dataset[,i_types]==eval_data[i_eval]))
+  #scores <- c(scores, length(new_dataset[type_cols[i_types]==eval_data[i_eval],]))  
+  }
+}
+
+#coul
+#eval_data
+#types
+#scores
+library("plyr")
+
+custom_types <- c(rep(types, each = length(types)))
+custom_eval  <- c(rep(eval_data, times = length(eval_data)))
+new_table <- data.frame(custom_types, custom_eval, scores)
+new_table
+#ggplot(new_table, aes(x = types, y = scores, fill = eval_data, label = scores)) +
+ # geom_bar(stat = "identity") +
+  #scale_color_brewer(palette = "Blues") +
+  #geom_text(size = 3, position = position_stack(vjust = 0.5))
+#new_table <- ddply(new_table, .(custom_types), 
+#              transform, pos = cumsum(scores) - (0.5 * scores)
+#)
+#new_table
+#ggplot(new_table, aes(x = custom_types, y = scores)) + 
+#  geom_bar(aes(fill = custom_eval), stat="identity") +
+#  geom_text(aes(label = scores, y = pos), size = 3)
+ggplot(new_table, aes(x = custom_types, y = scores, fill = custom_eval, label = scores)) +
+  geom_bar(stat = "identity") +
+  #scale_color_brewer(palette = "Blues") +
+  #brewer.pal(5, "Blues")
+  #scale_color_manual(values = brewer.pal(5, "Blues")) + 
+  scale_fill_brewer(palette="Blues") +
+  geom_text(size = 3, position = position_stack(vjust = 0.5)) 
+  
+  
+
 
 new_table = data.frame(
   strong_disagree =  c(book_score[1], text_score[1], video_score[1], live_score[1], console_score[1]),
