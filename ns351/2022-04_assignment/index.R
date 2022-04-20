@@ -115,4 +115,24 @@ par(xpd=TRUE)
 plot <- barplot(t(new_table), legend = FALSE, main="The Rate of Evaluation in Each Types", xlab="Learning Types", ylab="Number of each scores", col = rev(brewer.pal(5, "Blues")))
 legend("topright", legend=eval, fill=brewer.pal(5, "Blues"))
 
+dividing_eval <- function(target){
+  disagree <- new_table[target,1] + new_table[target,2]
+  agree <- new_table[target,4] + new_table[target,5]
+  return(c(disagree, agree))
+}
 
+division_table = data.frame(
+  book = dividing_eval(1),
+  text = dividing_eval(2),
+  video = dividing_eval(3),
+  console = dividing_eval(4),
+  live = dividing_eval(5)
+)
+division_table
+rownames(division_table) <- c("dis_agree", "agree")
+division_table
+t(new_table)
+plot <- barplot(t(t(division_table)), legend = FALSE, main="The Rate of Evaluation in Each Types", xlab="Learning Types", ylab="Number of each scores", col = rev(c("#BDD7E7","#3182BD")))
+legend("topright", legend=c("agree", "dis_agree"), fill=c("#BDD7E7","#3182BD"))
+brewer.pal(5, "Blues")
+           
