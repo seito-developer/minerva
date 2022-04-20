@@ -104,5 +104,11 @@ new_table <- data.frame(custom_types, custom_eval, scores)
 ggplot(new_table, aes(x = custom_types, y = scores, fill = custom_eval, label = scores)) +
   geom_bar(stat = "identity") +
   scale_fill_brewer(palette="Blues") +
-  geom_text(size = 3, position = position_stack(vjust = 0.5)) 
+  geom_text(size = 3, position = position_stack(vjust = 0.5)) + 
+  labs(title="The Rate of Evaluation in Each Types",
+       x = "Learning Types", y = "Numbers of Votes", 
+       caption = paste("Total Votes:", sum(scores)/5),
+       fill = "Evaluation")
+
+
   
