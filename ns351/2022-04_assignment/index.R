@@ -79,7 +79,7 @@ new_dataset <- data.frame(
 scoring <- function(item){
   score <- c()
   for (index in 1:5) {
-    score = c(score, sum(str_count(item, eval_data[index])))
+    score = c(score, sum(item==eval_data[index]))
   }
   return(score)
 }
@@ -112,19 +112,7 @@ x2ratio <- function(x, byrow=FALSE) {
 colnames(new_table) <- rev(eval)
 rownames(new_table) <- items
 par(xpd=TRUE) 
-plot <- barplot(x2ratio(t(new_table)), legend = FALSE, main="Histogram", xlab="Learning Types", ylab="Number of each scores", col = rev(brewer.pal(5, "Blues")))
-
-book_mean <- sum(new_table[1,])
-text_mean <- sum(new_table[2,])
-video_mean <- sum(new_table[3,])
-live_mean <- sum(new_table[4,])
-console_mean <- sum(new_table[5,])
-
-#text(0.7,95,paste("Score:",book_mean),pos=1)
-#text(1.9,95,paste("Score:",text_mean),pos=1)
-#text(3.1,95,paste("Score:",video_mean),pos=1)
-#text(4.3,95,paste("Score:",live_mean),pos=1)
-#text(5.5,95,paste("Score:",console_mean),pos=1)
-
+plot <- barplot(t(new_table), legend = FALSE, main="The Rate of Evaluation in Each Types", xlab="Learning Types", ylab="Number of each scores", col = rev(brewer.pal(5, "Blues")))
 legend("topright", legend=eval, fill=brewer.pal(5, "Blues"))
+
 
