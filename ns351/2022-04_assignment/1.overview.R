@@ -103,7 +103,10 @@ new_table = data.frame(
 colnames(new_table) <- rev(eval)
 rownames(new_table) <- items
 par(xpd=TRUE) 
-plot <- barplot(t(new_table), legend = FALSE, main="The Rate of Evaluation in Each Types", xlab="Learning Types", ylab="Number of each scores", col = rev(brewer.pal(5, "Blues")))
+plot <- barplot(t(new_table), legend = FALSE, 
+                main="The Rate of Evaluation in Each Types", sub=paste("Total Samplings:", sum(new_table[1,])),
+                xlab="Learning Types", ylab="Number of each scores", col = rev(brewer.pal(5, "Blues")))
 legend("topright", legend=eval, fill=brewer.pal(5, "Blues"))
 
+text(20,20,paste("Total Samplings:", sum(new_table[1,])),pos=1)
 
