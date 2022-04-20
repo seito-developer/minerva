@@ -79,7 +79,7 @@ new_dataset <- data.frame(
 scoring <- function(item){
   score <- c()
   for (index in 1:5) {
-    score = c(score, sum(item==eval_data[index]))
+    score = c(score, sum(item==eval_data[index])*index)
   }
   return(score)
 }
@@ -101,18 +101,21 @@ new_table = data.frame(
 )
 new_table
 
-x2ratio <- function(x, byrow=FALSE) {
-  if ( !is.matrix(x) ) return(NA)  #引数xが行列以外ならば実行しない
-  if ( !is.logical(byrow) ) return(NA) #引数byrowが論理値以外ならば実行しない
-  if (byrow == FALSE)  { return(     t(  t(x) / apply(x , 2, sum)  )  )
-  }
-  else return(    x / apply(x , 1, sum)  )
-}
-
 colnames(new_table) <- rev(eval)
 rownames(new_table) <- items
 par(xpd=TRUE) 
-plot <- barplot(t(new_table), legend = FALSE, main="The Rate of Evaluation in Each Types", xlab="Learning Types", ylab="Number of each scores", col = rev(brewer.pal(5, "Blues")))
+plot <- barplot(t(new_table), legend = FALSE, main="The Total Score of Each Types", xlab="Learning Types", ylab="Number of each scores", col = rev(brewer.pal(5, "Blues")))
 legend("topright", legend=eval, fill=brewer.pal(5, "Blues"))
 
+book_sum <- sum(new_table[1,])
+text_sum <- sum(new_table[2,])
+video_sum <- sum(new_table[3,])
+console_sum <- sum(new_table[4,])
+live_sum <- sum(new_table[5,])
 
+
+text(0.7,280,paste(book_sum),pos=1)
+text(1.9,280,paste(text_sum),pos=1)
+text(3.1,280,paste(video_sum),pos=1)
+text(4.3,280,paste(console_sum),pos=1)
+text(5.5,280,paste(live_sum),pos=1)
