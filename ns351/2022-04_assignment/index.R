@@ -3,13 +3,15 @@ library("tidyr")
 library("ggplot2")
 library("stringr")
 library(RColorBrewer)
+library("plyr")
 
 file_path = "./dataset.csv"
 dataset <- read.csv(file_path, header = T)
 head(dataset)
 
-# Chart Color
-coul <- brewer.pal(5, "Blues")
+# Variables
+eval_data <- c("strong_disagree", "disagree", "neigther", "agree", "strong_agree")
+types <- c("book", "text", "video", "console", "live")
 
 # age
 new_age <- c()
@@ -37,8 +39,6 @@ new_experience <- ifelse(dataset[,4]=="ない", 1,
                                        ifelse(dataset[,4]=="3年以上5年未満", 4,
                                               ifelse(dataset[,4]=="5年以上", 5, FALSE
                                               )))))
-# lang
-eval_data <- c("strong_disagree", "disagree", "neigther", "agree", "strong_agree")
 
 new_lang <- c()
 new_lang <- ifelse(dataset[,5]=="強く同意する（絶対に日本語がいい）", eval_data[5],
@@ -85,60 +85,24 @@ scoring <- function(item){
   return(score)
 }
 
-book_score = scoring(new_dataset$book)
-text_score = scoring(new_dataset$text)
-video_score = scoring(new_dataset$video)
-live_score = scoring(new_dataset$live)
-console_score = scoring(new_dataset$console)
+start_col <- 4
+type_cols_len <- ncol(new_dataset)
+scores <- c()
 
-items <- c("book", "text", "video", "live", "console")
-
-new_table = data.frame(
-  strong_disagree =  c(book_score[1], text_score[1], video_score[1], live_score[1], console_score[1]),
-  disagree =  c(book_score[2], text_score[2], video_score[2], live_score[2], console_score[2]),
-  neigther =  c(book_score[3], text_score[3], video_score[3], live_score[3], console_score[3]),
-  agree =  c(book_score[4], text_score[4], video_score[4], live_score[4], console_score[4]),
-  strong_agree =  c(book_score[5], text_score[5], video_score[5], live_score[5], console_score[5])
-)
-new_table
-
-x2ratio <- function(x, byrow=FALSE) {
-  if (byrow == FALSE) {
-    return(t(t(x) / apply(x , 2, sum)))
-  }
-  else {
-    return(x / apply(x, 1, sum))
+for (i_types in start_col:type_cols_len) {
+  print(i_types)
+  for (i_eval in 1:length(eval_data)) {
+    scores <- c(scores, sum(new_dataset[,i_types]==eval_data[i_eval]))
   }
 }
 
-colnames(new_table) <- rev(eval)
-rownames(new_table) <- items
-par(xpd=TRUE) 
+#variables: eval_data, types, scores
+custom_types <- c(rep(types, each = length(types)))
+custom_eval  <- c(rep(eval_data, times = length(eval_data)))
+new_table <- data.frame(custom_types, custom_eval, scores)
 
-plot <- barplot(x2ratio(t(new_table)), col=rev(coul) , border="#1C4C7E", legend = FALSE, main="The Rate of Evaluation in Each Types", xlab="Learning Types", ylab="Number of each scores")
-
-x2ratio(t(new_table))
-new_table[1,]
-book_mean <- sum(new_table[1,])
-text_mean <- sum(new_table[2,])
-video_mean <- sum(new_table[3,])
-live_mean <- sum(new_table[4,])
-console_mean <- sum(new_table[5,])
-
-text(0.7,95,paste("Score:",book_mean),cex=1)
-text(1.9,95,paste("Score:",text_mean),pos=1)
-text(3.1,95,paste("Score:",video_mean),pos=1)
-text(4.3,95,paste("Score:",live_mean),pos=1)
-text(5.5,95,paste("Score:",console_mean),pos=1)
-
-legend("topright", legend=rev(eval), fill=coul)
-
-text(0.7,30,new_table[1,1],pos=1)
-
-new_table
-text(plot, new_table$strong_disagree, new_table$disagree, cex=1)
-
-data_for_chart <- x2ratio(t(new_table))
-ggplot(data_for_chart, aes(x = Year, y = Frequency, fill = Category, label = Frequency)) +
+ggplot(new_table, aes(x = custom_types, y = scores, fill = custom_eval, label = scores)) +
   geom_bar(stat = "identity") +
-  geom_text(size = 3, position = position_stack(vjust = 0.5))
+  scale_fill_brewer(palette="Blues") +
+  geom_text(size = 3, position = position_stack(vjust = 0.5)) 
+  
